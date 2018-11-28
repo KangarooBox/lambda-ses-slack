@@ -28,6 +28,9 @@
     "package": "./scripts/package.sh",
     "test": "./scripts/test.sh"
   },
-  "repository": "git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KangarooBox/lambda-ses-slack"
+  },
   "version": "0.1.0"
 }
