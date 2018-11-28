@@ -1,0 +1,33 @@
+{
+  "authors": [
+    "Richard Hurt <rnhurt@gmail.com>"
+  ],
+  "config": {
+    "progress": "true"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.364.0",
+    "https": "^1.0.0",
+    "lodash": "^4.15.0",
+    "url": "^0.11.0"
+  },
+  "description": "Send SES notifications to Slack",
+  "devDependencies": {
+    "node-lambda": "^0.13.0"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "ses",
+    "slack",
+    "notifications"
+  ],
+  "license": "MIT",
+  "name": "lambda-ses-slack",
+  "scripts": {
+    "package": "./scripts/package.sh",
+    "test": "./scripts/test.sh"
+  },
+  "repository": "git",
+  "version": "0.1.0"
+}
