@@ -40,18 +40,17 @@ var postMessage = function(message, callback) {
   postReq.end();
 };
 
-var handleBounce = function(event, context) {
-  const MAIL = JSON.parse(event.Records[0].Sns.Message);
+var handleBounce = function(MAIL) {
   const timestamp = MAIL.timestamp;
 
-  const title = `SES Bounce Message (${MAIL.bounce.bounceType} - ${MAIL.bounce.bounceSubType})`;
+  const title = `SES Message Bounce (${MAIL.bounce.bounceType} - ${MAIL.bounce.bounceSubType})`;
   var subject = "n/a";
   var from = MAIL.mail.source;    
 
   // Get better headers, if possible
-  if(MAIL.mail.commonHeaders){
-    const subject = MAIL.mail.commonHeaders.subject;
-    const from = MAIL.mail.commonHeaders.from;
+  if(false == MAIL.mail.headersTruncated){
+    subject = MAIL.mail.commonHeaders.subject;
+    from = MAIL.mail.commonHeaders.from[0];
   }
   
   var recipients = '';
@@ -85,11 +84,59 @@ var handleBounce = function(event, context) {
   return _.merge(slackMessage, baseSlackMessage);
 };
 
+var handleDelivery = function(MAIL) {
+  const timestamp = MAIL.timestamp;
+
+  const title = `SES Message Delivery`;
+  var subject = "n/a";
+  var from = MAIL.mail.source;    
+
+  // Get better headers, if possible
+  if(false == MAIL.mail.headersTruncated){
+    subject = MAIL.mail.commonHeaders.subject;
+    from = MAIL.mail.commonHeaders.from[0];
+  }
+  
+  var recipients = '';
+  MAIL.delivery.recipients.forEach(function(recipient){
+    recipients += `* ${recipient}\n`;
+  })
+
+  var color = "good";
+
+  var slackMessage = {
+    text: "*" + title + "*",
+    attachments: [
+      {
+        "fields": [
+          { "title": "Subject", "value": subject, "short": false},
+          { "title": "From", "value": from, "short": false},
+          { "title": "Recipients", "value": recipients, "short": false}
+        ],
+        "color": color,
+        "ts":  timestamp,
+        "icon_emoji": ":aws-ses:"
+      }
+    ]
+  };
+
+  return _.merge(slackMessage, baseSlackMessage);
+};
+
 
 exports.handler = function(event, context) {
   console.log("message received:" + JSON.stringify(event, null, 2));
+  const MAIL = JSON.parse(event.Records[0].Sns.Message);
+  var slackMessage = '';
 
-  var slackMessage = handleBounce(event,context)
+  switch(MAIL.notificationType) {
+    case 'Delivery':
+      slackMessage = handleDelivery(MAIL);
+      break;
+    case 'Bounce':
+      slackMessage = handleBounce(MAIL);
+      break;
+  }
 
   postMessage(slackMessage, function(response) {
     if (response.statusCode < 400) {
