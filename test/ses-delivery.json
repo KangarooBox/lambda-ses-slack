@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:11111222223333:MY_SNS_TOPIC:831bc50a-1d26-420e-8baa-549d4afdasfasf",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "b055b56d-e4df-5384-b6d5-e114ece24323",
+        "TopicArn": "arn:aws:sns:us-east-1:11111222223333:MY_SNS_TOPIC",
+        "Subject": null,
+        "Message": "{\"notificationType\":\"Delivery\",\"mail\":{\"timestamp\":\"1999-01-28T21:17:46.497Z\",\"source\":\"no-reply@example.com\",\"sourceArn\":\"arn:aws:ses:us-east-1:11111222223333:identity/example.com\",\"sourceIp\":\"11.11.11.11\",\"sendingAccountId\":\"11111222223333\",\"messageId\":\"010001675c2f57e4-54e8f47a-a1e4-42be-8464-206c4daef788-000000\",\"destination\":[\"recipient@example.com\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"Date\",\"value\":\"Tue, 1 Jan 1999 21:17:45 +0000\"},{\"name\":\"From\",\"value\":\"no-reply@example.com\"},{\"name\":\"To\",\"value\":\"recipient@example.com\"},{\"name\":\"Message-ID\",\"value\":\"<5bff05f9c31cd_4f92d1cc0c10asdfa@ip-1-2-3-4.mail>\"},{\"name\":\"Subject\",\"value\":\"Subject Goes Here\"},{\"name\":\"Mime-Version\",\"value\":\"1.0\"},{\"name\":\"Content-Type\",\"value\":\"multipart/mixed; boundary=\\\"--==_mimepart_5bff05f9c02f3_4f92d1cc0c1053a3\\\"; charset=UTF-8\"},{\"name\":\"Content-Transfer-Encoding\",\"value\":\"7bit\"}],\"commonHeaders\":{\"from\":[\"no-reply@example.com\"],\"date\":\"Tue, 01 Jan 1999 21:17:45 +0000\",\"to\":[\"recipient@example.com\"],\"messageId\":\"<5bff05f9c31cd_4f92d1cc0c1054ca@ip-10-163-5-11.mail>\",\"subject\":\"Subject Goes Here\"}},\"delivery\":{\"timestamp\":\"1999-01-28T21:17:46.435Z\",\"processingTimeMillis\":607,\"recipients\":[\"recipient@example.com\"],\"smtpResponse\":\"250 2.0.0 wASLJ9xn016824-afass2342342 Message accepted for delivery\",\"remoteMtaIp\":\"2.2.2.2\",\"reportingMTA\":\"a8-50.smtp-out.amazonses.com\"}}",
+        "Timestamp": "1999-01-28T21:17:46.497Z",
+        "SignatureVersion": "1",
+        "Signature": "lQtRf2fveL6O3ioG+Y6HGsgNQD/jgCIMDeDNxpHBpuQCYUs/x8qxvxdcW7tdpw2Eu0+hF+BVfboEo0jNRsLGLMGcTRSf6AXH+PooVSS3ZV5dbhD7wPQAtslUacElWFIbulyPKTbvakm+2t8OT73iXRDEbDDcWA+i7pSdD+8TOHmVCDGgvGyMx0xBlqXumKH8F6I6B0xdPwfeTwYHEt7/UcCm3elUAoDjrMm6qr2qCBu6ZvLuMR2T+23Iv05Hvkb87lyOExNRa4XZilMzCe7AQthWQlhjSS1bVOhXhRPeuirtGurbUEpNAKhcM76LnOpu+sR5MX6q+Fl0RGKk9OkwCg==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-ac565b8b1a6c5d002d285f9598aa1d9b.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:11111222223333:MY_SNS_TOPIC:831bc50a-1d26-420e-8baa-549d4afdasfasf",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}
