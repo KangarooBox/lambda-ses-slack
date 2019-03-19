@@ -123,6 +123,49 @@ var handleDelivery = function(MAIL) {
   return _.merge(slackMessage, baseSlackMessage);
 };
 
+var handleComplaint = function(MAIL) {
+  const timestamp = MAIL.timestamp;
+
+  const title = `SES Message Complaint`;
+  var subject = "n/a";
+  var from = MAIL.mail.source;    
+
+  // Get better headers, if possible
+  if(false == MAIL.mail.headersTruncated){
+    subject = MAIL.mail.commonHeaders.subject;
+    from = MAIL.mail.commonHeaders.from[0];
+  }
+  
+  var recipients = '';
+  MAIL.complaint.complainedRecipients.forEach(function(recipient){
+    recipients += `* ${recipient.emailAddress}: ${MAIL.complaint.complaintFeedbackType}\n`;
+  })
+
+  var color = "danger";
+  switch (MAIL.complaint.complaintFeedbackType) {
+    case 'abuse':
+      color = "warning";
+      break;
+  }
+
+  var slackMessage = {
+    text: "*" + title + "*",
+    attachments: [
+      {
+        "fields": [
+          { "title": "From", "value": from, "short": false},
+          { "title": "Subject", "value": subject, "short": false},
+          { "title": "Recipients", "value": recipients, "short": false}
+        ],
+        "color": color,
+        "ts":  timestamp,
+        "icon_emoji": ":regas:"
+      }
+    ]
+  };
+
+  return _.merge(slackMessage, baseSlackMessage);
+};
 
 exports.handler = function(event, context) {
   console.log("message received:" + JSON.stringify(event, null, 2));
@@ -135,6 +178,9 @@ exports.handler = function(event, context) {
       break;
     case 'Bounce':
       slackMessage = handleBounce(MAIL);
+      break;
+    case 'Complaint':
+      slackMessage = handleComplaint(MAIL);
       break;
   }
 
