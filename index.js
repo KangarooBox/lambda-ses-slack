@@ -8,7 +8,7 @@ const hookUrl = process.env.HOOK_URL;
 
 var baseSlackMessage = {}
 
-var postMessage = function (message, callback) {
+var postMessage = function(message, callback) {
   var body = JSON.stringify(message);
   var options = url.parse(hookUrl);
   options.method = 'POST';
@@ -17,13 +17,13 @@ var postMessage = function (message, callback) {
     'Content-Length': Buffer.byteLength(body),
   };
 
-  var postReq = https.request(options, function (res) {
+  var postReq = https.request(options, function(res) {
     var chunks = [];
     res.setEncoding('utf8');
-    res.on('data', function (chunk) {
+    res.on('data', function(chunk) {
       return chunks.push(chunk);
     });
-    res.on('end', function () {
+    res.on('end', function() {
       var body = chunks.join('');
       if (callback) {
         callback({
@@ -40,21 +40,21 @@ var postMessage = function (message, callback) {
   postReq.end();
 };
 
-var handleBounce = function (MAIL) {
+var handleBounce = function(MAIL) {
   const timestamp = MAIL.timestamp;
 
   const title = `SES Message Bounce (${MAIL.bounce.bounceType} - ${MAIL.bounce.bounceSubType})`;
   var subject = "n/a";
-  var from = MAIL.mail.source;
+  var from = MAIL.mail.source;    
 
   // Get better headers, if possible
-  if (false == MAIL.mail.headersTruncated) {
+  if(false == MAIL.mail.headersTruncated){
     subject = MAIL.mail.commonHeaders.subject;
     from = MAIL.mail.commonHeaders.from[0];
   }
-
+  
   var recipients = '';
-  MAIL.bounce.bouncedRecipients.forEach(function (recipient) {
+  MAIL.bounce.bouncedRecipients.forEach(function(recipient){
     recipients += `* ${recipient.emailAddress} (${recipient.action}): ${recipient.diagnosticCode}\n`;
   })
 
@@ -70,12 +70,12 @@ var handleBounce = function (MAIL) {
     attachments: [
       {
         "fields": [
-          { "title": "Subject", "value": subject, "short": false },
-          { "title": "From", "value": from, "short": false },
-          { "title": "Recipients", "value": recipients, "short": false }
+          { "title": "Subject", "value": subject, "short": false},
+          { "title": "From", "value": from, "short": false},
+          { "title": "Recipients", "value": recipients, "short": false}
         ],
         "color": color,
-        "ts": timestamp,
+        "ts":  timestamp,
         "icon_emoji": ":aws-ses:"
       }
     ]
@@ -84,21 +84,21 @@ var handleBounce = function (MAIL) {
   return _.merge(slackMessage, baseSlackMessage);
 };
 
-var handleDelivery = function (MAIL) {
+var handleDelivery = function(MAIL) {
   const timestamp = MAIL.timestamp;
 
   const title = `SES Message Delivery`;
   var subject = "n/a";
-  var from = MAIL.mail.source;
+  var from = MAIL.mail.source;    
 
   // Get better headers, if possible
-  if (false == MAIL.mail.headersTruncated) {
+  if(false == MAIL.mail.headersTruncated){
     subject = MAIL.mail.commonHeaders.subject;
     from = MAIL.mail.commonHeaders.from[0];
   }
-
+  
   var recipients = '';
-  MAIL.delivery.recipients.forEach(function (recipient) {
+  MAIL.delivery.recipients.forEach(function(recipient){
     recipients += `* ${recipient}\n`;
   })
 
@@ -109,12 +109,12 @@ var handleDelivery = function (MAIL) {
     attachments: [
       {
         "fields": [
-          { "title": "Subject", "value": subject, "short": false },
-          { "title": "From", "value": from, "short": false },
-          { "title": "Recipients", "value": recipients, "short": false }
+          { "title": "Subject", "value": subject, "short": false},
+          { "title": "From", "value": from, "short": false},
+          { "title": "Recipients", "value": recipients, "short": false}
         ],
         "color": color,
-        "ts": timestamp,
+        "ts":  timestamp,
         "icon_emoji": ":aws-ses:"
       }
     ]
@@ -123,68 +123,22 @@ var handleDelivery = function (MAIL) {
   return _.merge(slackMessage, baseSlackMessage);
 };
 
-var handleComplaint = function (MAIL) {
-  const timestamp = MAIL.timestamp;
 
-  const title = `SES Message Complaint`;
-  var subject = "n/a";
-  var from = MAIL.mail.source;
-
-  // Get better headers, if possible
-  if (false == MAIL.mail.headersTruncated) {
-    subject = MAIL.mail.commonHeaders.subject;
-    from = MAIL.mail.commonHeaders.from[0];
-  }
-
-  var recipients = '';
-  MAIL.complaint.complainedRecipients.forEach(function (recipient) {
-    recipients += `* ${recipient.emailAddress}: ${MAIL.complaint.complaintFeedbackType}\n`;
-  })
-
-  var color = "danger";
-  switch (MAIL.complaint.complaintFeedbackType) {
-    case 'abuse':
-      color = "warning";
-      break;
-  }
-
-  var slackMessage = {
-    text: "*" + title + "*",
-    attachments: [
-      {
-        "fields": [
-          { "title": "From", "value": from, "short": false },
-          { "title": "Subject", "value": subject, "short": false },
-          { "title": "Recipients", "value": recipients, "short": false }
-        ],
-        "color": color,
-        "ts": timestamp,
-        "icon_emoji": ":regas:"
-      }
-    ]
-  };
-
-  return _.merge(slackMessage, baseSlackMessage);
-};
-
-exports.handler = function (event, context) {
+exports.handler = function(event, context) {
   console.log("message received:" + JSON.stringify(event, null, 2));
   const MAIL = JSON.parse(event.Records[0].Sns.Message);
   var slackMessage = '';
 
-  switch (MAIL.notificationType) {
+  switch(MAIL.notificationType) {
     case 'Delivery':
       slackMessage = handleDelivery(MAIL);
       break;
     case 'Bounce':
       slackMessage = handleBounce(MAIL);
       break;
-    case 'Complaint':
-      slackMessage = handleComplaint(MAIL);
-      break;
   }
 
-  postMessage(slackMessage, function (response) {
+  postMessage(slackMessage, function(response) {
     if (response.statusCode < 400) {
       console.info('message posted successfully');
       context.succeed();
